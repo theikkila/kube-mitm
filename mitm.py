@@ -31,6 +31,14 @@ del spec['clusterIP']
 # Select all ports
 ports = [str(p['port']) for p in spec['ports']]
 
+pod_ports = []
+for p in spec['ports']:
+    pod_ports.append({
+        "name": p['name'],
+        "protocol": p['protocol'],
+        "containerPort": p['port'], 
+    })
+
 
 # Run pod and redirect to the port
 del k['status']
@@ -71,7 +79,7 @@ mitmproxy_pod = {
                 "image": "theikkila/mitmp",
                 "imagePullPolicy": "Always",
                 "name": "mitmproxy",
-                "ports": [{"containerPort": int(p), "protocol": "TCP"} for p in ports]
+                "ports": pod_ports
             }
         ],
         "restartPolicy": "Always"
